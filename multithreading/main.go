@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -82,7 +82,7 @@ func fetchBrasilAPI(ctx context.Context, cep string, resultChannel chan<- APIRes
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		resultChannel <- APIResult{Source: "BrasilAPI", Result: fmt.Sprintf("Erro ao ler resposta: %v", err)}
 		return
@@ -123,7 +123,7 @@ func fetchViaCEP(ctx context.Context, cep string, resultChannel chan<- APIResult
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		resultChannel <- APIResult{Source: "ViaCEP", Result: fmt.Sprintf("Erro ao ler resposta: %v", err)}
 		return
