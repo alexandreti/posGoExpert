@@ -11,10 +11,8 @@ Inclua um README.md com os passos a serem executados no desafio e a porta em que
 
 1)Iniciar os containers do Docker e do rabbitmq com o comando:
 docker-compose up -d
-
-2)Criar o Banco de dados orders:
-docker exec -it mysql sh -c 'mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS orders;"'
-Digitar a senha do mysql: root
+Obs, Caso os containers já existam, podem ser deletados antes da criação com o comando:
+docker rm -f $(docker ps -a -q)
 
 2)Iniciar o banco de dados com o comando:
 make migrate
@@ -22,6 +20,9 @@ make migrate
 3) Iniciar o projeto com os comandos:
 cd cmd/ordersystem/
 go run main.go wire_gen.go
+
+
+
 
 Portas dos serviços:
     web server on port :8000
