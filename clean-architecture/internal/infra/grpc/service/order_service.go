@@ -5,8 +5,8 @@ import (
 
 	//"github.com/devfullcycle/20-CleanArch/internal/infra/grpc/pb"
 	//"github.com/devfullcycle/20-CleanArch/internal/usecase"
-	"github.com/alexandreti/posGoExpert/clean-architecture/infra/grpc/pb"
-	"github.com/alexandreti/posGoExpert/clean-architecture/usecase"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/grpc/pb"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/usecase"
 )
 
 type OrderService struct {

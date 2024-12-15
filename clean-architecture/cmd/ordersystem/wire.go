@@ -12,12 +12,12 @@ import (
 	// "github.com/devfullcycle/20-CleanArch/internal/infra/web"
 	// "github.com/devfullcycle/20-CleanArch/internal/usecase"
 	// "github.com/devfullcycle/20-CleanArch/pkg/events"
-	"github.com/alexandreti/posGoExpert/clean-architecture/entity"
-	"github.com/alexandreti/posGoExpert/clean-architecture/event"
-	"github.com/alexandreti/posGoExpert/clean-architecture/events"
-	"github.com/alexandreti/posGoExpert/clean-architecture/infra/database"
-	"github.com/alexandreti/posGoExpert/clean-architecture/infra/web"
-	"github.com/alexandreti/posGoExpert/clean-architecture/usecase"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/entity"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/event"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/database"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/web"
+	"github.com/alexandreti/posGoExpert/clean-architecture/internal/usecase"
+	"github.com/alexandreti/posGoExpert/clean-architecture/pkg/events"
 
 	"github.com/google/wire"
 )

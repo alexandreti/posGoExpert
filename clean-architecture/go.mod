@@ -53,6 +53,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-//replace github.com/devfullcycle/20-CleanArch => /home/alexandre/GIT/posGoExpert/clean-architecture/
-//replace github.com/devfullcycle/20-CleanArch => ../clean-architecture/
