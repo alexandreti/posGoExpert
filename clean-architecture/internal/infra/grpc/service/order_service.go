@@ -12,9 +12,13 @@ type OrderService struct {
 	CreateOrderUseCase usecase.CreateOrderUseCase
 }
 
-func NewOrderService(createOrderUseCase usecase.CreateOrderUseCase) *OrderService {
+func NewOrderService(
+	createOrderUseCase usecase.CreateOrderUseCase, 
+	listOrderUseCase: listOrderUseCase
+	) *OrderService {
 	return &OrderService{
 		CreateOrderUseCase: createOrderUseCase,
+		ListOrderUseCase: listOrderUseCase,
 	}
 }
 
