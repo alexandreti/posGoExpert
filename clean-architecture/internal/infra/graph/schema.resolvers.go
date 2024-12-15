@@ -6,33 +6,40 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/graph/model"
-	// "github.com/devfullcycle/20-CleanArch/internal/usecase"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/graph/model"
-	"github.com/alexandreti/posGoExpert/clean-architecture/internal/usecase"
 )
 
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderInput) (*model.Order, error) {
-	dto := usecase.OrderInputDTO{
-		ID:    input.ID,
-		Price: float64(input.Price),
-		Tax:   float64(input.Tax),
-	}
-	output, err := r.CreateOrderUseCase.Execute(dto)
+	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
+}
+
+// ListOrders is the resolver for the listOrders field.
+func (r *queryResolver) ListOrders(ctx context.Context) ([]*model.Order, error) {
+	orders, err := r.ListOrdersUseCase.Execute()
 	if err != nil {
 		return nil, err
 	}
-	return &model.Order{
-		ID:         output.ID,
-		Price:      float64(output.Price),
-		Tax:        float64(output.Tax),
-		FinalPrice: float64(output.FinalPrice),
-	}, nil
+
+	var ordersOutput []*model.Order
+	for _, order := range orders {
+		ordersOutput = append(ordersOutput, &model.Order{
+			ID:         order.ID,
+			Price:      order.Price,
+			Tax:        order.Tax,
+			FinalPrice: order.FinalPrice,
+		})
+	}
+	return ordersOutput, nil
 }
 
-// Mutation returns MutationResolver implementation.
+// Mutation returns graph.MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
+// Query returns graph.QueryResolver implementation.
+func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

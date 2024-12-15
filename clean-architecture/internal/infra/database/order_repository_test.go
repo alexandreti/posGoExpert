@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"testing"
 
-	//"github.com/devfullcycle/20-CleanArch/internal/entity"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/entity"
 
 	"github.com/stretchr/testify/suite"

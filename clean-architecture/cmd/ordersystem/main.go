@@ -9,13 +9,6 @@ import (
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 
-	// "github.com/devfullcycle/20-CleanArch/configs"
-	// "github.com/devfullcycle/20-CleanArch/internal/event/handler"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/graph"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/grpc/pb"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/grpc/service"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/web/webserver"
-	// "github.com/devfullcycle/20-CleanArch/pkg/events"
 	"github.com/alexandreti/posGoExpert/clean-architecture/configs"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/event/handler"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/graph"

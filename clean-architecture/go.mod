@@ -1,5 +1,4 @@
 //Atualizar o repositório ao final, e retirar o replace ao final desse arquivo!
-//module github.com/devfullcycle/20-CleanArch
 module github.com/alexandreti/posGoExpert/clean-architecture
 
 go 1.22

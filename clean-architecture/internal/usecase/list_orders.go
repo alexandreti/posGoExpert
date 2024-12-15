@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	//"github.com/devfullcycle/20-CleanArch/internal/entity"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/entity"
 )
 

@@ -6,12 +6,6 @@ package main
 import (
 	"database/sql"
 
-	// "github.com/devfullcycle/20-CleanArch/internal/entity"
-	// "github.com/devfullcycle/20-CleanArch/internal/event"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/database"
-	// "github.com/devfullcycle/20-CleanArch/internal/infra/web"
-	// "github.com/devfullcycle/20-CleanArch/internal/usecase"
-	// "github.com/devfullcycle/20-CleanArch/pkg/events"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/entity"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/event"
 	"github.com/alexandreti/posGoExpert/clean-architecture/internal/infra/database"
