@@ -21,7 +21,7 @@ func NewWebServer(serverPort string) *WebServer {
 	}
 }
 
-func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
+func (s *WebServer) AddHandler(method, path string, handler http.HandlerFunc) {
 	s.Handlers[path] = handler
 }
 
