@@ -10,8 +10,8 @@ Para a criação do banco de dados, utilize o Docker (Dockerfile / docker-compos
 Inclua um README.md com os passos a serem executados no desafio e a porta em que a aplicação deverá responder em cada serviço.
 
 Listagem das orders:
-- REST
-- GRPC
+- REST (Feito)
+- GRPC (Fazendo)
 - GraphQL
 
 Checar: https://plataforma.fullcycle.com.br/courses/c2957fa4-1e88-4425-be86-5a17ad2664ca/346/197/177/conteudos?capitulo=177&conteudo=9693
