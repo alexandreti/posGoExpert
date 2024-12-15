@@ -17,8 +17,8 @@ type ListOrdersUseCase struct {
 
 func NewListOrdersUseCase(
 	OrderRepository entity.OrderRepositoryInterface,
-) *CreateOrderUseCase {
-	return &CreateOrderUseCase{
+) *ListOrdersUseCase {
+	return &ListOrdersUseCase{
 		OrderRepository: OrderRepository,
 	}
 }
