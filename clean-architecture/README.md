@@ -11,7 +11,7 @@ Inclua um README.md com os passos a serem executados no desafio e a porta em que
 
 Listagem das orders:
 - REST (Feito)
-- GRPC (Fazendo)
+- GRPC (Feito)
 - GraphQL
 
 Checar: https://plataforma.fullcycle.com.br/courses/c2957fa4-1e88-4425-be86-5a17ad2664ca/346/197/177/conteudos?capitulo=177&conteudo=9693
@@ -47,3 +47,14 @@ Comando para entrar no banco de dados:
     Senha: root
     Comandos do banco de dados:
         show tables
+
+
+Testar o gRPC com evans:
+evans -r repl
+package pb
+service OrderService
+call ListOrders
+
+
+Atualizar protofiles(gRPC):
+protoc --go_out=. --go-grpc_out=. internal/infra/grpc/protofiles/order.proto 
