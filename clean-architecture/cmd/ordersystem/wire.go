@@ -6,12 +6,19 @@ package main
 import (
 	"database/sql"
 
-	"github.com/devfullcycle/20-CleanArch/internal/entity"
-	"github.com/devfullcycle/20-CleanArch/internal/event"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/database"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/web"
-	"github.com/devfullcycle/20-CleanArch/internal/usecase"
-	"github.com/devfullcycle/20-CleanArch/pkg/events"
+	// "github.com/devfullcycle/20-CleanArch/internal/entity"
+	// "github.com/devfullcycle/20-CleanArch/internal/event"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/database"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/web"
+	// "github.com/devfullcycle/20-CleanArch/internal/usecase"
+	// "github.com/devfullcycle/20-CleanArch/pkg/events"
+	"github.com/alexandreti/posGoExpert/clean-architecture/entity"
+	"github.com/alexandreti/posGoExpert/clean-architecture/event"
+	"github.com/alexandreti/posGoExpert/clean-architecture/events"
+	"github.com/alexandreti/posGoExpert/clean-architecture/infra/database"
+	"github.com/alexandreti/posGoExpert/clean-architecture/infra/web"
+	"github.com/alexandreti/posGoExpert/clean-architecture/usecase"
+
 	"github.com/google/wire"
 )
 

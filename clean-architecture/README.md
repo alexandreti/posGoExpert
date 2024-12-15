@@ -58,3 +58,7 @@ call ListOrders
 
 Atualizar protofiles(gRPC):
 protoc --go_out=. --go-grpc_out=. internal/infra/grpc/protofiles/order.proto 
+
+
+Atualizar schema do graphQL:
+go run github.com/99designs/gqlgen generate

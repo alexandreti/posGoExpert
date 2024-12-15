@@ -8,13 +8,22 @@ import (
 
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/devfullcycle/20-CleanArch/configs"
-	"github.com/devfullcycle/20-CleanArch/internal/event/handler"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/graph"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/grpc/pb"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/grpc/service"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/web/webserver"
-	"github.com/devfullcycle/20-CleanArch/pkg/events"
+
+	// "github.com/devfullcycle/20-CleanArch/configs"
+	// "github.com/devfullcycle/20-CleanArch/internal/event/handler"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/graph"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/grpc/pb"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/grpc/service"
+	// "github.com/devfullcycle/20-CleanArch/internal/infra/web/webserver"
+	// "github.com/devfullcycle/20-CleanArch/pkg/events"
+	"github.com/alexandreti/posGoExpert/clean-architecture/configs"
+	"github.com/alexandreti/posGoExpert/clean-architecture/events"
+	"github.com/alexandreti/posGoExpert/clean-architecture/graph"
+	"github.com/alexandreti/posGoExpert/clean-architecture/grpc/pb"
+	"github.com/alexandreti/posGoExpert/clean-architecture/handler"
+	"github.com/alexandreti/posGoExpert/clean-architecture/service"
+	"github.com/alexandreti/posGoExpert/clean-architecture/web/webserver"
+
 	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -66,6 +75,7 @@ func main() {
 
 	srv := graphql_handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
 		CreateOrderUseCase: *createOrderUseCase,
+		ListOrdersUseCase:  *listOrdersUseCase,
 	}}))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
