@@ -12,9 +12,7 @@ Inclua um README.md com os passos a serem executados no desafio e a porta em que
 Listagem das orders:
 - REST (Feito)
 - GRPC (Feito)
-- GraphQL
-
-Checar: https://plataforma.fullcycle.com.br/courses/c2957fa4-1e88-4425-be86-5a17ad2664ca/346/197/177/conteudos?capitulo=177&conteudo=9693
+- GraphQL (Feito)
 
 
 1)Iniciar os containers do Docker e do rabbitmq com o comando:
@@ -25,16 +23,9 @@ docker rm -f $(docker ps -a -q)
 2)Iniciar o banco de dados com o comando:
 make migrate
 
-3)Criar a fila no RabbitMQ
-Criar fila orders
-Entrar na fila orders e fazer o bind com amq.direct
-
 3) Iniciar o projeto com os comandos:
 cd cmd/ordersystem/
 go run main.go wire_gen.go
-
-
-
 
 Portas dos serviços:
     web server on port :8000
@@ -42,12 +33,8 @@ Portas dos serviços:
     GraphQL server on port 8080
 
 
-Comando para entrar no banco de dados:
-    docker exec -it mysql sh -c 'mysql -uroot -p orders'
-    Senha: root
-    Comandos do banco de dados:
-        show tables
 
+Testes:
 
 Testar o gRPC com evans:
 evans -r repl
@@ -55,10 +42,35 @@ package pb
 service OrderService
 call ListOrders
 
+Testar GraphQL:
+Acessar playground: http://localhost:8080/
+rodar a query:
+query queryOrders {
+  listOrders{
+    id
+    Price
+    Tax
+    FinalPrice
+  }
+}
+
+Testar API REST:
+acessar api/list_orders.http
+ou diretamente o link: http://localhost:8000/order
+
+Anotações:
+Comando para entrar no banco de dados:
+    docker exec -it mysql sh -c 'mysql -uroot -p orders'
+    Senha: root
+    Comandos do banco de dados:
+        show tables
 
 Atualizar protofiles(gRPC):
 protoc --go_out=. --go-grpc_out=. internal/infra/grpc/protofiles/order.proto 
 
-
 Atualizar schema do graphQL:
 go run github.com/99designs/gqlgen generate
+
+Criar a fila no RabbitMQ
+Criar fila orders
+Entrar na fila orders e fazer o bind com amq.direct
