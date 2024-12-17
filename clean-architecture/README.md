@@ -10,9 +10,9 @@ Para a criação do banco de dados, utilize o Docker (Dockerfile / docker-compos
 Inclua um README.md com os passos a serem executados no desafio e a porta em que a aplicação deverá responder em cada serviço.
 
 Listagem das orders:
-- REST (Feito)
-- GRPC (Feito)
-- GraphQL (Feito)
+- REST (Feito) (OK)
+- GRPC (Feito) (OK)
+- GraphQL (Feito) (OK)
 
 
 1)Iniciar os containers do Docker e do rabbitmq com o comando:
@@ -56,7 +56,7 @@ query queryOrders {
 
 Testar API REST:
 acessar api/list_orders.http
-ou diretamente o link: http://localhost:8000/order
+ou diretamente o link: http://localhost:8000/list
 
 Anotações:
 Comando para entrar no banco de dados:
