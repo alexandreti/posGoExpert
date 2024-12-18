@@ -1,0 +1,12 @@
+FROM golang:latest as builder
+
+WORKDIR /app
+COPY . .
+RUN cd ./cmd/ordersystem && GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ordersystem .
+
+FROM scratch
+COPY --from=builder /app/cmd/ordersystem/ordersystem /app/ordersystem
+COPY --from=builder /app/cmd/ordersystem/.env /app/.env
+CMD ["/app/ordersystem"]
+
+#docker build -t alexandreti/posgoexpert-clean-architecture -f Dockerfile.prod .

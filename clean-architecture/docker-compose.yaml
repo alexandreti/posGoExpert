@@ -13,6 +13,11 @@ services:
       - 3306:3306
     volumes:
       - .docker/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -24,3 +29,40 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl status"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      #start_period: 30s
+
+  migrations:
+    image: migrate/migrate
+    container_name: migrate
+    depends_on:
+      mysql:
+        condition: service_healthy
+    entrypoint: ["sh", "-c", "until nc -z mysql 3306; do echo 'Aguardando MySQL...'; sleep 2; done && migrate -path=/migrations -database 'mysql://root:root@tcp(mysql:3306)/orders' -verbose up"]
+    volumes:
+      - ./sql/migrations:/migrations
+    networks:
+      - default
+
+  goapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: posgoexpert-clean-architecture
+    depends_on:
+      migrations:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    working_dir: /app
+    entrypoint: ["/app/ordersystem"]
+    ports:
+      - 8000:8000    # Web server
+      - 50051:50051  # gRPC server
+      - 8080:8080    # GraphQL server
+    networks:
+      - default

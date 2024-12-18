@@ -77,14 +77,34 @@ func main() {
 	http.ListenAndServe(":"+configs.GraphQLServerPort, nil)
 }
 
+//	func getRabbitMQChannel() *amqp.Channel {
+//		//conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+//		conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+//		if err != nil {
+//			panic(err)
+//		}
+//		ch, err := conn.Channel()
+//		if err != nil {
+//			panic(err)
+//		}
+//		return ch
+//	}
 func getRabbitMQChannel() *amqp.Channel {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	if err != nil {
-		panic(err)
+	var conn *amqp.Connection
+	var err error
+
+	// Tenta conectar ao localhost
+	if conn, err = amqp.Dial("amqp://guest:guest@localhost:5672/"); err != nil {
+		// Se falhar, tenta conectar ao rabbitmq
+		if conn, err = amqp.Dial("amqp://guest:guest@rabbitmq:5672/"); err != nil {
+			panic("Falha ao conectar ao RabbitMQ em ambos os endereços")
+		}
 	}
+
+	// Abre o canal
 	ch, err := conn.Channel()
 	if err != nil {
-		panic(err)
+		panic("Falha ao abrir o canal no RabbitMQ")
 	}
 	return ch
 }
