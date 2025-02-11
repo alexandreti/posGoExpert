@@ -6,7 +6,6 @@ Accept: application/json
 GET http://localhost:8080/temperaturebycep?cep=12345678 HTTP/1.1
 Accept: application/json
 
-
 ### Teste com CEP inválido (CEP com menos de 8 dígitos)
 GET http://localhost:8080/temperaturebycep?cep=1234 HTTP/1.1
 Accept: application/json
