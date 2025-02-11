@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: alexandreti/deploy-com-cloud-run
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - API_KEY=${API_KEY}
+    restart: "no"

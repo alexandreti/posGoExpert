@@ -1,0 +1,16 @@
+### Teste com CEP válido
+GET http://localhost:8080/temperaturebycep?cep=01001000 HTTP/1.1
+Accept: application/json
+
+### Teste com CEP inexistente
+GET http://localhost:8080/temperaturebycep?cep=12345678 HTTP/1.1
+Accept: application/json
+
+
+### Teste com CEP inválido (CEP com menos de 8 dígitos)
+GET http://localhost:8080/temperaturebycep?cep=1234 HTTP/1.1
+Accept: application/json
+
+### Teste com CEP inválido (CEP com caracteres não numéricos)
+GET http://localhost:8080/temperaturebycep?cep=12ab5678 HTTP/1.1
+Accept: application/json
