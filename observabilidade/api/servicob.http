@@ -9,3 +9,16 @@ POST http://localhost:8082/temperaturebycep
 Content-Type: application/json
 
 {    "cep": "99999999"}
+
+### Teste do Serviço B - CEP inválido, tamanho diferente de 8
+POST http://localhost:8082/temperaturebycep
+Content-Type: application/json
+
+{    "cep": "99999"}
+
+
+### Teste do Serviço B - CEP inválido, letra no cep
+POST http://localhost:8082/temperaturebycep
+Content-Type: application/json
+
+{    "cep": "9A999999"}

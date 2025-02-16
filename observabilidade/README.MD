@@ -33,8 +33,9 @@ Basedo no cenário conhecido "Sistema de temperatura por CEP" denominado Serviç
 
 Após a implementação dos serviços, adicione a implementação do OTEL + Zipkin:
 
-Implementar tracing distribuído entre Serviço A - Serviço B
-Utilizar span para medir o tempo de resposta do serviço de busca de CEP e busca de temperatura
+- Implementar tracing distribuído entre Serviço A - Serviço B
+- Utilizar span para medir o tempo de resposta do serviço de busca de CEP e busca de temperatura
+
 Dicas:
 
 - Utilize a API viaCEP (ou similar) para encontrar a localização que deseja consultar a temperatura: https://viacep.com.br/
@@ -56,3 +57,8 @@ Entrega:
 - O código-fonte completo da implementação.
 - Documentação explicando como rodar o projeto em ambiente dev.
 - Utilize docker/docker-compose para que possamos realizar os testes de sua aplicação.
+
+# Entrega
+
+### Link do zipkin
+http://localhost:9412/

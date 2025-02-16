@@ -1,10 +1,9 @@
-version: '3.8'
-
 #Remove todos os containers, networks, volumes e imagens não utilizadas. Em caso de erro ao rodar o docker-compose up, execute esse comando.
 #docker system prune -a
 
 #Para parar os containers, removendo os volumes e networks
 #docker-compose down  
+version: '3.8'
 
 services:
   servicoa:
@@ -14,7 +13,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SERVICO_B_URL=http://servicoB:8082
+      - SERVICO_B_URL=http://servicob:8082
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://otel-collector:9411/api/v2/spans
     restart: "no"
 
   servicob:
@@ -25,4 +25,19 @@ services:
       - "8082:8082"
     environment:
       - API_KEY=${API_KEY}
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://otel-collector:9411/api/v2/spans
     restart: "no"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./.docker/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "9411:9411"
+      - "4317:4317"
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9412:9411"

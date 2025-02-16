@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +10,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/zipkin"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
 type CepRequest struct {
@@ -35,16 +43,45 @@ type WeatherAPIResponse struct {
 	} `json:"current"`
 }
 
+func initTracer(serviceName string) func() {
+	zipkinURL := os.Getenv("OTEL_EXPORTER_ZIPKIN_ENDPOINT")
+	if zipkinURL == "" {
+		zipkinURL = "http://localhost:9411/api/v2/spans"
+	}
+	exporter, err := zipkin.New(zipkinURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceNameKey.String(serviceName),
+		)),
+	)
+	otel.SetTracerProvider(tp)
+	return func() { _ = tp.Shutdown(context.Background()) }
+}
+
 func converterTemperaturas(tempC float64) (float64, float64) {
 	tempF := tempC*1.8 + 32
 	tempK := tempC + 273.15
 	return tempF, tempK
 }
 
-func ConsultaCEP(cep string) (ViaCepResponse, error) {
+func ConsultaCEP(ctx context.Context, cep string) (ViaCepResponse, error) {
+	tracer := otel.Tracer("servicoB")
+	ctx, span := tracer.Start(ctx, "ConsultaCEP")
+	defer span.End()
+
 	viacepURL := "https://viacep.com.br/ws/"
 	requestURL := fmt.Sprintf("%s%s/json/", viacepURL, cep)
-	resp, err := http.Get(requestURL)
+	req, err := http.NewRequestWithContext(ctx, "GET", requestURL, nil)
+	if err != nil {
+		return ViaCepResponse{}, err
+	}
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
 	if err != nil {
 		return ViaCepResponse{}, err
 	}
@@ -66,13 +103,22 @@ func ConsultaCEP(cep string) (ViaCepResponse, error) {
 	return viaCepResp, nil
 }
 
-func ConsultaTemperatura(city string) (float64, error) {
+func ConsultaTemperatura(ctx context.Context, city string) (float64, error) {
+	tracer := otel.Tracer("servicoB")
+	ctx, span := tracer.Start(ctx, "ConsultaTemperatura")
+	defer span.End()
+
 	weatherAPIURL := "http://api.weatherapi.com/v1/current.json"
 	apiKey := os.Getenv("API_KEY")
 	encodedCity := url.QueryEscape(city)
 	requestURL := fmt.Sprintf("%s?key=%s&q=%s&aqi=no", weatherAPIURL, apiKey, encodedCity)
 
-	resp, err := http.Get(requestURL)
+	req, err := http.NewRequestWithContext(ctx, "GET", requestURL, nil)
+	if err != nil {
+		return 0, err
+	}
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
 	if err != nil {
 		return 0, err
 	}
@@ -91,6 +137,9 @@ func ConsultaTemperatura(city string) (float64, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer("servicoB").Start(r.Context(), "HandlerServicoB")
+	defer span.End()
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		return
@@ -104,13 +153,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(body, &req)
 
-	viaCep, err := ConsultaCEP(req.CEP)
+	viaCep, err := ConsultaCEP(ctx, req.CEP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	tempC, err := ConsultaTemperatura(viaCep.Localidade)
+	tempC, err := ConsultaTemperatura(ctx, viaCep.Localidade)
 	if err != nil {
 		http.Error(w, "Erro ao consultar temperatura", http.StatusInternalServerError)
 		return
@@ -130,6 +179,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	shutdown := initTracer("servicoB")
+	defer shutdown()
+
 	http.HandleFunc("/temperaturebycep", handler)
 	fmt.Println("Serviço B rodando na porta 8082")
 	log.Fatal(http.ListenAndServe(":8082", nil))
