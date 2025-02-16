@@ -3,6 +3,10 @@
 
 #Para parar os containers, removendo os volumes e networks
 #docker-compose down  
+
+#Inicia o docker-compose, forçando a recriação das imagens
+#docker-compose up --build
+
 version: '3.8'
 
 services:

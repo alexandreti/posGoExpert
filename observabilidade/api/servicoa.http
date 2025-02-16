@@ -15,3 +15,9 @@ POST http://localhost:8081/consulta
 Content-Type: application/json
 
 {    "cep": "1234A678"}
+
+### Teste do Serviço A - Envio de CEP inexistente
+POST http://localhost:8081/consulta
+Content-Type: application/json
+
+{    "cep": "12345678"}

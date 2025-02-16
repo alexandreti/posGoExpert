@@ -14,6 +14,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/zipkin"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -60,6 +61,8 @@ func initTracer(serviceName string) func() {
 		)),
 	)
 	otel.SetTracerProvider(tp)
+	// Define explicitamente o propagador W3C (TraceContext)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
 	return func() { _ = tp.Shutdown(context.Background()) }
 }
 
@@ -95,11 +98,9 @@ func ConsultaCEP(ctx context.Context, cep string) (ViaCepResponse, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&viaCepResp); err != nil {
 		return ViaCepResponse{}, err
 	}
-
 	if viaCepResp.Erro == "true" {
 		return ViaCepResponse{}, errors.New("can not find zipcode")
 	}
-
 	return viaCepResp, nil
 }
 
@@ -112,7 +113,6 @@ func ConsultaTemperatura(ctx context.Context, city string) (float64, error) {
 	apiKey := os.Getenv("API_KEY")
 	encodedCity := url.QueryEscape(city)
 	requestURL := fmt.Sprintf("%s?key=%s&q=%s&aqi=no", weatherAPIURL, apiKey, encodedCity)
-
 	req, err := http.NewRequestWithContext(ctx, "GET", requestURL, nil)
 	if err != nil {
 		return 0, err
@@ -132,12 +132,13 @@ func ConsultaTemperatura(ctx context.Context, city string) (float64, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&weatherResp); err != nil {
 		return 0, err
 	}
-
 	return weatherResp.Current.TempC, nil
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	ctx, span := otel.Tracer("servicoB").Start(r.Context(), "HandlerServicoB")
+	// Extrai o contexto de tracing dos headers injetados pelo Serviço A
+	ctx := otel.GetTextMapPropagator().Extract(r.Context(), propagation.HeaderCarrier(r.Header))
+	ctx, span := otel.Tracer("servicoB").Start(ctx, "HandlerServicoB")
 	defer span.End()
 
 	if r.Method != http.MethodPost {
@@ -145,15 +146,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req CepRequest
+	var reqData CepRequest
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Erro ao ler o corpo da requisição", http.StatusBadRequest)
 		return
 	}
-	json.Unmarshal(body, &req)
+	json.Unmarshal(body, &reqData)
 
-	viaCep, err := ConsultaCEP(ctx, req.CEP)
+	viaCep, err := ConsultaCEP(ctx, reqData.CEP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return

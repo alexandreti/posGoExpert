@@ -15,6 +15,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/zipkin"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -41,6 +42,8 @@ func initTracer(serviceName string) func() {
 		)),
 	)
 	otel.SetTracerProvider(tp)
+	// Define explicitamente o propagador W3C (TraceContext)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
 	return func() { _ = tp.Shutdown(context.Background()) }
 }
 
@@ -69,11 +72,18 @@ func encaminhaParaServicoB(ctx context.Context, cep string) (*http.Response, err
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
+
+	// Injeta o contexto de trace nos headers para propagação
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+	// (Opcional) Imprimir os headers para debug:
+	// fmt.Println("Headers injetados:", req.Header)
+
 	client := &http.Client{Timeout: 10 * time.Second}
 	return client.Do(req)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	// Inicia um span para o handler, usando o contexto da requisição
 	ctx, span := otel.Tracer("servicoA").Start(r.Context(), "HandlerServicoA")
 	defer span.End()
 
@@ -82,15 +92,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req CepRequest
+	var reqData CepRequest
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Erro ao ler o corpo da requisição", http.StatusBadRequest)
 		return
 	}
-	json.Unmarshal(body, &req)
+	json.Unmarshal(body, &reqData)
 
-	cep, err := ValidaCEP(req.CEP)
+	cep, err := ValidaCEP(reqData.CEP)
 	if err != nil {
 		http.Error(w, "invalid zipcode", http.StatusUnprocessableEntity)
 		return
