@@ -1,0 +1,11 @@
+### Teste do Serviço B - Consulta de temperatura por CEP válido
+POST http://localhost:8082/temperaturebycep
+Content-Type: application/json
+
+{    "cep": "01001000"}
+
+### Teste do Serviço B - CEP inexistente
+POST http://localhost:8082/temperaturebycep
+Content-Type: application/json
+
+{    "cep": "99999999"}

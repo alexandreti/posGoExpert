@@ -1,0 +1,28 @@
+version: '3.8'
+
+#Remove todos os containers, networks, volumes e imagens não utilizadas. Em caso de erro ao rodar o docker-compose up, execute esse comando.
+#docker system prune -a
+
+#Para parar os containers, removendo os volumes e networks
+#docker-compose down  
+
+services:
+  servicoa:
+    build:
+      context: .
+      dockerfile: cmd/servicoA/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVICO_B_URL=http://servicoB:8082
+    restart: "no"
+
+  servicob:
+    build:
+      context: .
+      dockerfile: cmd/servicoB/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - API_KEY=${API_KEY}
+    restart: "no"
